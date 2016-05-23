@@ -63,6 +63,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
     if ((self = [super init])) {
         _operationClass = [SDWebImageDownloaderOperation class];
         _shouldDecompressImages = YES;
+        _shouldScaleImages = YES;
         _executionOrder = SDWebImageDownloaderFIFOExecutionOrder;
         _downloadQueue = [NSOperationQueue new];
         _downloadQueue.maxConcurrentOperationCount = 6;
@@ -171,6 +172,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                             });
                                                         }];
         operation.shouldDecompressImages = wself.shouldDecompressImages;
+        operation.shouldScaleImages = wself.shouldScaleImages;
         
         if (wself.urlCredential) {
             operation.credential = wself.urlCredential;

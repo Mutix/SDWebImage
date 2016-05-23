@@ -52,6 +52,7 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
     if ((self = [super init])) {
         _request = request;
         _shouldDecompressImages = YES;
+        _shouldScaleImages = YES;
         _shouldUseCredentialStorage = YES;
         _options = options;
         _progressBlock = [progressBlock copy];
@@ -310,12 +311,11 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
             if (partialImageRef) {
                 UIImage *image = [UIImage imageWithCGImage:partialImageRef scale:1 orientation:orientation];
                 NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
-                UIImage *scaledImage = [self scaledImageForKey:key image:image];
-                if (self.shouldDecompressImages) {
-                    image = [UIImage decodedImageWithImage:scaledImage];
+                if (self.shouldScaleImages) {
+                    image = [self scaledImageForKey:key image:image];
                 }
-                else {
-                    image = scaledImage;
+                if (self.shouldDecompressImages) {
+                    image = [UIImage decodedImageWithImage:image];
                 }
                 CGImageRelease(partialImageRef);
                 dispatch_main_sync_safe(^{
@@ -383,7 +383,10 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
         } else if (self.imageData) {
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
             NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
-            image = [self scaledImageForKey:key image:image];
+            
+            if (self.shouldScaleImages) {
+                image = [self scaledImageForKey:key image:image];
+            }
             
             // Do not force decoding animated GIFs
             if (!image.images) {

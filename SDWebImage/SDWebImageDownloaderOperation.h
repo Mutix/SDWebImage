@@ -23,6 +23,8 @@ extern NSString *const SDWebImageDownloadFinishNotification;
 @property (strong, nonatomic, readonly) NSURLRequest *request;
 
 
+@property (assign, nonatomic) BOOL shouldScaleImages;
+
 @property (assign, nonatomic) BOOL shouldDecompressImages;
 
 /**

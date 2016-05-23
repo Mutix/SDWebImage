@@ -113,6 +113,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
             _diskCachePath = path;
         }
 
+        // Set scaling to YES
+        _shouldScaleImages = YES;
+        
         // Set decompression to YES
         _shouldDecompressImages = YES;
 
@@ -370,7 +373,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     NSData *data = [self diskImageDataBySearchingAllPathsForKey:key];
     if (data) {
         UIImage *image = [UIImage sd_imageWithData:data];
-        image = [self scaledImageForKey:key image:image];
+        if (self.shouldScaleImages) {
+            image = [self scaledImageForKey:key image:image];
+        }
         if (self.shouldDecompressImages) {
             image = [UIImage decodedImageWithImage:image];
         }
